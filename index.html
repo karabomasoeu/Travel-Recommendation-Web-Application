@@ -587,6 +587,15 @@
     </button>
   </section>
 
+  <!-- Search Bar -->
+  <div class="search-wrap">
+    <input type="text" id="search-input" placeholder='Try "beach", "mountain", "city"…' onkeydown="if(event.key==='Enter') doSearch()" />
+    <button onclick="doSearch()">🔍 Search</button>
+  </div>
+ 
+  <!-- Search Results --> 
+  <div id="search-results" style="display:none;"></div>
+
   <!-- Featured Destinations -->
   <section class="section">
     <div class="section-header">
