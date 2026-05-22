@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wanderlust</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --ocean: #1A6B8A;
+      --ocean-light: #E6F3F8;
+      --gold: #C8963E;
+      --bg: #ffffff;
+      --bg-secondary: #F9F7F4;
+      --text-primary: #1C1C1C;
+      --text-secondary: #4A4A4A;
+      --text-muted: #7A7A7A;
+      --border: rgba(0,0,0,0.1);
+      --border-hover: rgba(26,107,138,0.4);
+      --radius-md: 8px;
+      --radius-lg: 14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      background: #fff;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .logo span { color: var(--ocean); font-style: italic; }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--ocean); }
+
+    /* PAGE VISIBILITY */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* HOME PAGE */
+    .hero {
+      position: relative;
+      padding: 6rem 2.5rem 5rem;
+      background: linear-gradient(135deg, #EAF4F9 0%, #F9F4EC 100%);
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 360px; height: 360px;
+      border-radius: 50%;
+      background: rgba(26,107,138,0.06);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -50px; left: 8%;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(200,150,62,0.06);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--ocean);
+      font-weight: 500;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 54px;
+      line-height: 1.15;
+      color: var(--text-primary);
+      max-width: 580px;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 em { font-style: italic; color: var(--ocean); }
+
+    .hero p {
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--text-secondary);
+      max-width: 500px;
+      font-weight: 300;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--ocean);
+      color: #fff;
+      padding: 0.9rem 2.2rem;
+      border-radius: 3px;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-family: 'Jost', sans-serif;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* Featured destinations */
+    .section {
+      padding: 4rem 2.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      color: var(--text-primary);
+    }
+
+    .section-link {
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ocean);
+      text-decoration: none;
+    }
+
+    .dest-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .dest-card {
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color 0.25s, transform 0.25s;
+      cursor: default;
+    }
+    .dest-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+    }
+
+    .dest-img {
+      height: 190px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 54px;
+      position: relative;
+    }
+    .dest-img.kyoto     { background: linear-gradient(155deg, #E8EEF5 0%, #D0DCE8 100%); }
+    .dest-img.santorini { background: linear-gradient(155deg, #E5EFF8 0%, #C8DBF0 100%); }
+    .dest-img.safari    { background: linear-gradient(155deg, #F5EED8 0%, #EADBB0 100%); }
+
+    .dest-badge {
+      position: absolute;
+      top: 12px; left: 12px;
+      background: rgba(255,255,255,0.88);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ocean);
+      padding: 4px 11px;
+      border-radius: 3px;
+      font-weight: 500;
+    }
+
+    .dest-body { padding: 1.25rem; }
+
+    .dest-body h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 19px;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .dest-body p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      margin-bottom: 1rem;
+    }
+
+    .dest-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.8rem;
+      border-top: 0.5px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .dest-meta strong {
+      color: var(--ocean);
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    /* Ocean strip */
+    .intro-strip {
+      background: var(--ocean);
+      color: #fff;
+      padding: 3.5rem 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .intro-strip h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      line-height: 1.3;
+      font-weight: 400;
+      margin-bottom: 1rem;
+    }
+    .intro-strip h2 em { font-style: italic; opacity: 0.75; }
+
+    .intro-strip p {
+      font-size: 15px;
+      line-height: 1.85;
+      opacity: 0.82;
+      font-weight: 300;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      text-align: center;
+    }
+
+    .stat-num {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-size: 38px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      opacity: 0.65;
+    }
+
+    /* ABOUT PAGE */
+    .about-hero {
+      padding: 5rem 2.5rem 2.5rem;
+      max-width: 660px;
+    }
+
+    .about-hero h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 40px;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin-bottom: 1.25rem;
+    }
+
+    .about-hero p {
+      font-size: 16px;
+      line-height: 1.9;
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      padding: 2.5rem 2.5rem 4rem;
+    }
+
+    .value-card {
+      padding: 1.75rem;
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      transition: border-color 0.2s;
+    }
+    .value-card:hover { border-color: var(--border-hover); }
+
+    .value-icon {
+      width: 42px; height: 42px;
+      border-radius: var(--radius-md);
+      background: var(--ocean-light);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ocean);
+      font-size: 20px;
+      margin-bottom: 1rem;
+    }
+
+    .value-card h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .value-card p {
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    /* Team */
+    .team-section { padding: 0 2.5rem 5rem; }
+
+    .team-section h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    .team-card {
+      text-align: center;
+      padding: 1.75rem 1rem;
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      transition: border-color 0.2s;
+    }
+    .team-card:hover { border-color: var(--border-hover); }
+
+    .avatar {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      font-weight: 500;
+      margin: 0 auto 0.85rem;
+    }
+
+    .team-card h5 {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+
+    .team-card span {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /*  CONTACT PAGE */
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 3.5rem;
+      padding: 5rem 2.5rem;
+      align-items: start;
+    }
+
+    .contact-info h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      line-height: 1.3;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .contact-info > p {
+      font-size: 15px;
+      line-height: 1.85;
+      color: var(--text-secondary);
+      font-weight: 300;
+      margin-bottom: 2rem;
+    }
+
+    .contact-methods { display: flex; flex-direction: column; gap: 0.9rem; }
+
+    .contact-method {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .method-icon {
+      width: 38px; height: 38px;
+      border-radius: var(--radius-md);
+      background: var(--ocean-light);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ocean);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .method-text strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    .method-text span {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Form */
+    .contact-form {
+      background: var(--bg-secondary);
+      padding: 2.25rem;
+      border-radius: var(--radius-lg);
+      border: 0.5px solid var(--border);
+    }
+
+    .contact-form h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: var(--text-primary);
+      margin-bottom: 1.75rem;
+    }
+
+    .form-group { margin-bottom: 1.25rem; }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-bottom: 7px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 0.5px solid rgba(0,0,0,0.15);
+      border-radius: var(--radius-md);
+      font-family: 'Jost', sans-serif;
+      font-size: 14px;
+      background: #fff;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--ocean);
+      box-shadow: 0 0 0 3px rgba(26,107,138,0.1);
+    }
+
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 0.9rem;
+      background: var(--ocean);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: 'Jost', sans-serif;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 0.25rem;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .submit-btn:hover { opacity: 0.87; transform: translateY(-1px); }
+
+    /* FOOTER */
+    footer {
+      padding: 2rem 2.5rem;
+      border-top: 0.5px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--text-primary);
+    }
+    .footer-logo span { color: var(--ocean); font-style: italic; }
+
+    footer p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /*SVG ICONS (inline) */
+    .ico { display: inline-block; vertical-align: middle; }
+  </style>
+</head>
+<body>
+
+<!--  NAV -->
+<nav>
+  <a class="logo" onclick="showPage('home')">Wander<span>lust</span></a>
+  <ul class="nav-links">
+    <li><a class="active" onclick="showPage('home')">Home</a></li>
+    <li><a onclick="showPage('about')">About Us</a></li>
+    <li><a onclick="showPage('contact')">Contact Us</a></li>
+  </ul>
+</nav>
+
+<!-- HOME PAGE  -->
+<div id="home" class="page active">
+
+  <!-- Hero -->
+  <section class="hero">
+    <span class="eyebrow">Curated Travel Experiences</span>
+    <h1>Discover the World's <em>Hidden Gems</em></h1>
+    <p>We handpick extraordinary destinations and craft unforgettable journeys tailored to your sense of wonder, from ancient temples to wild savannas.</p>
+    <button class="btn-primary" onclick="showPage('contact')">
+      ✦ &nbsp;Start Your Journey
+    </button>
+  </section>
+
+  <!-- Featured Destinations -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">Featured Destinations</h2>
+      <a class="section-link" href="#">View all →</a>
+    </div>
+    <div class="dest-grid">
+
+      <div class="dest-card">
+        <div class="dest-img kyoto">
+          <span>⛩️</span>
+          <span class="dest-badge">Asia</span>
+        </div>
+        <div class="dest-body">
+          <h3>Kyoto, Japan</h3>
+          <p>Ancient temples, zen gardens, and seasonal cherry blossoms in Japan's cultural capital.</p>
+          <div class="dest-meta">
+            <span> 7–10 days ideal</span>
+            <strong>From R12,800</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card">
+        <div class="dest-img santorini">
+          <span>🏛️</span>
+          <span class="dest-badge">Europe</span>
+        </div>
+        <div class="dest-body">
+          <h3>Santorini, Greece</h3>
+          <p>Iconic white-washed cliffs, volcanic beaches, and sunset views over the Aegean Sea.</p>
+          <div class="dest-meta">
+            <span> 5–7 days ideal</span>
+            <strong>From R3,200</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card">
+        <div class="dest-img safari">
+          <span>🦁</span>
+          <span class="dest-badge">Africa</span>
+        </div>
+        <div class="dest-body">
+          <h3>Serengeti, Tanzania</h3>
+          <p>Witness the Great Migration, millions of wildebeest and zebras crossing the plains.</p>
+          <div class="dest-meta">
+            <span> 8–12 days ideal</span>
+            <strong>From R5,500</strong>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Intro Strip -->
+  <section class="intro-strip">
+    <div>
+      <h2>Travel that <em>transforms,</em> not just transports</h2>
+      <p>We believe every journey should leave you changed. Our team of seasoned explorers personally vets every destination, accommodation, and experience.</p>
+    </div>
+    <div class="stats">
+      <div>
+        <span class="stat-num">120+</span>
+        <span class="stat-label">Destinations</span>
+      </div>
+      <div>
+        <span class="stat-num">8K</span>
+        <span class="stat-label">Travelers</span>
+      </div>
+      <div>
+        <span class="stat-num">4.9★</span>
+        <span class="stat-label">Avg Rating</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!--ABOUT PAGE  -->
+<div id="about" class="page">
+
+  <div class="about-hero">
+    <span class="eyebrow">Our Story</span>
+    <h2>Passionate travelers, at your service</h2>
+    <p>Wanderlust was born in 2015 from a simple belief: travel should be effortless, authentic, and deeply personal. We started as a small collective of globe-trotters and have grown into a trusted travel company — with one mission unchanged: to craft journeys that stay with you forever.</p>
+  </div>
+
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-icon">♥</div>
+      <h4>Curated with care</h4>
+      <p>Every destination on our platform is personally visited and vetted by our team.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🌿</div>
+      <h4>Responsible travel</h4>
+      <p>We partner with local operators and promote sustainable tourism that genuinely benefits the communities we visit.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🛡</div>
+      <h4>Always there for you</h4>
+      <p>Our team is available 24/7 throughout your trip.</p>
+    </div>
+  </div>
+
+  <div class="team-section">
+    <h3>Meet the team</h3>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="avatar" style="background:#E6F3F8; color:#1A6B8A;">KM</div>
+        <h5>Karabo Masoeu</h5>
+        <span>Founder & CEO</span>
+      </div>
+      <div class="team-card">
+        <div class="avatar" style="background:#EEEDFE; color:#534AB7;">MM</div>
+        <h5>Mokgabane Malema</h5>
+        <span>Head of Curation</span>
+      </div>
+      <div class="team-card">
+        <div class="avatar" style="background:#E1F5EE; color:#0F6E56;">PN</div>
+        <h5>Palesa Nkosi</h5>
+        <span>Africa Specialist</span>
+      </div>
+      <div class="team-card">
+        <div class="avatar" style="background:#FAEEDA; color:#854F0B;">RP</div>
+        <h5>Riku Patel</h5>
+        <span>Asia Specialist</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!--  CONTACT PAGE -->
+<div id="contact" class="page">
+
+  <div class="contact-layout">
+
+    <div class="contact-info">
+      <span class="eyebrow">Get in Touch</span>
+      <h2>Let's plan your next adventure</h2>
+      <p>Whether you have a destination in mind or need inspiration, our travel experts are here to help you design the perfect trip.</p>
+
+      <div class="contact-methods">
+        <div class="contact-method">
+          <div class="method-icon">✉</div>
+          <div class="method-text">
+            <strong>Email us</strong>
+            <span>hello@wanderlust.travel</span>
+          </div>
+        </div>
+        <div class="contact-method">
+          <div class="method-icon">📞</div>
+          <div class="method-text">
+            <strong>Call us</strong>
+            <span>+27 12 663 2023</span>
+          </div>
+        </div>
+        <div class="contact-method">
+          <div class="method-icon">🕐</div>
+          <div class="method-text">
+            <strong>Hours</strong>
+            <span>Mon–Fri, 9 am – 7 pm SAT</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form">
+      <h3>Send us a message</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First name</label>
+          <input type="text" placeholder="Sofia" />
+        </div>
+        <div class="form-group">
+          <label>Last name</label>
+          <input type="text" placeholder="Lara" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email address</label>
+        <input type="email" placeholder="you@email.com" />
+      </div>
+      <div class="form-group">
+        <label>Destination of interest</label>
+        <select>
+          <option value="">Select a region…</option>
+          <option>Asia Pacific</option>
+          <option>Europe</option>
+          <option>Africa &amp; Middle East</option>
+          <option>The Americas</option>
+          <option>I need inspiration!</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Tell us about your dream trip</label>
+        <textarea placeholder="Dates, group size, special requests…"></textarea>
+      </div>
+      <button class="submit-btn" type="button">✦ &nbsp;Send Message</button>
+    </div>
+
+  </div>
+
+</div>
+
+<!--FOOTER-->
+<footer>
+  <div class="footer-logo">Wander<span>lust</span></div>
+  <p>© 2026 Wanderlust Travel. All rights reserved.</p>
+</footer>
+
+<script>
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+
+    const idx = { home: 0, about: 1, contact: 2 };
+    const links = document.querySelectorAll('.nav-links a');
+    if (links[idx[id]]) links[idx[id]].classList.add('active');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
