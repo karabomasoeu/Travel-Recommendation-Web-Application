@@ -802,16 +802,123 @@
 </footer>
 
 <script>
+  /* PAGE NAVIGATION */
   function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
     document.getElementById(id).classList.add('active');
-
     const idx = { home: 0, about: 1, contact: 2 };
     const links = document.querySelectorAll('.nav-links a');
     if (links[idx[id]]) links[idx[id]].classList.add('active');
-
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+ 
+  /* DESTINATION DATABASE  */
+  const destinations = [
+    {
+      name: 'Whitehaven Beach, Australia',
+      tags: ['beach', 'beaches', 'beachy', 'sand', 'ocean', 'sea', 'coast', 'tropical', 'island'],
+      badge: 'Oceania',
+      desc: 'Pristine white silica sands stretching 7 km along the Whitsundays — one of the purest beaches on the planet.',
+      img: 'https://unsplash.com/photos/land-in-a-body-of-water-during-daytime-2vl2xFZyiJo',
+      duration: '3–5 days ideal',
+      price: 'From R21,400'
+    },
+    {
+      name: 'Amalfi Coast, Italy',
+      tags: ['beach', 'beaches', 'beachy', 'ocean', 'sea', 'coast', 'europe', 'mediterranean'],
+      badge: 'Europe',
+      desc: 'Dramatic cliffside villages tumbling into cobalt Mediterranean waters — a beach lover\'s dream with Italian charm.',
+      img: 'https://plus.unsplash.com/premium_photo-1677359734743-231e33b5c7d3?q=80&w=460&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      duration: '5–8 days ideal',
+      price: 'From $2,600'
+    },
+    {
+      name: 'Kyoto, Japan',
+      tags: ['temple', 'culture', 'asia', 'japan', 'history', 'city'],
+      badge: 'Asia',
+      desc: 'Ancient temples, zen gardens, and seasonal cherry blossoms in Japan\'s cultural capital.',
+      img: 'https://images.unsplash.com/photo-1526481280693-3bfa7568e0f3?q=80&w=871&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      duration: '7–10 days ideal',
+      price: 'From R23,800'
+    }
+    {
+      name: 'Serengeti, Tanzania',
+      tags: ['safari', 'africa', 'wildlife', 'nature', 'adventure'],
+      badge: 'Africa',
+      desc: 'Witness the Great Migration — millions of wildebeest and zebras crossing the vast plains.',
+      img: 'https://images.unsplash.com/photo-1560440293-855922f9cc7d?q=80&w=872&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      duration: '8–12 days ideal',
+      price: 'From R46,500'
+    },
+    {
+      name: 'Swiss Alps, Switzerland',
+      tags: ['mountain', 'mountains', 'snow', 'ski', 'hiking', 'europe', 'nature'],
+      badge: 'Europe',
+      desc: 'Majestic peaks, charming alpine villages, and world-class ski slopes year-round.',
+      img: 'https://images.unsplash.com/photo-1667682343189-35937293fb66?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      duration: '5–8 days ideal',
+      price: 'From R36,800'
+    },
+    {
+      name: 'New York City, USA',
+      tags: ['city', 'urban', 'culture', 'america', 'shopping', 'food'],
+      badge: 'Americas',
+      desc: 'The city that never sleeps, iconic skyline, world-class museums, and endless culinary delights.',
+      img: 'https://images.unsplash.com/photo-1518391846015-55a9cc003b25?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      duration: '4–7 days ideal',
+      price: 'From R24,200'
+    }
+  ];
+ 
+  /* SEARCH FUNCTION */
+  function doSearch() {
+    const raw = document.getElementById('search-input').value.trim();
+    const query = raw.toLowerCase();
+    const resultsEl = document.getElementById('search-results');
+    const featuredEl = document.getElementById('featured-section');
+ 
+    if (!query) {
+      resultsEl.style.display = 'none';
+      featuredEl.style.display = 'block';
+      return;
+    }
+ 
+    const words = query.split(/\s+/);
+    const matches = destinations.filter(d =>
+      words.some(w => d.tags.some(t => t.includes(w) || w.includes(t)))
+    );
+ 
+    featuredEl.style.display = matches.length ? 'none' : 'block';
+    resultsEl.style.display = 'block';
+ 
+    if (matches.length === 0) {
+      resultsEl.innerHTML = `
+        <div class="no-results">
+          <strong>No results for "${raw}"</strong>
+          Try "beach", "mountain", "safari", or "city"
+        </div>`;
+      return;
+    }
+ 
+    const cards = matches.map(d => `
+      <div class="result-card">
+        <img src="${d.img}" alt="${d.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+        <div class="img-placeholder" style="display:none;background:linear-gradient(135deg,#EAF4F9,#D0E8F0)">🏖️</div>
+        <div class="result-body">
+          <span class="result-badge">${d.badge}</span>
+          <h3>${d.name}</h3>
+          <p>${d.desc}</p>
+          <div class="result-meta">
+            <span>🕐 ${d.duration}</span>
+            <strong>${d.price}</strong>
+          </div>
+        </div>
+      </div>`).join('');
+ 
+    resultsEl.innerHTML = `
+      <p class="results-label">Showing <span>${matches.length} result${matches.length>1?'s':''}</span> for "<span>${raw}</span>"</p>
+      <div class="results-grid">${cards}</div>`;
   }
 </script>
 
